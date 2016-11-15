@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         //initialize Tesseract API
         String language = "eng";
-        datapath = getFilesDir()+ "/tesseract/";
+        datapath = getFilesDir() + "/tesseract/";
         mTess = new TessBaseAPI();
 
         checkFile(new File(datapath + "tessdata/"));
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mTess.init(datapath, language);
     }
 
-    public void processImage(View view){
+    public void processImage(View view) {
         String OCRresult = null;
         mTess.setImage(image);
         OCRresult = mTess.getUTF8Text();
@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkFile(File dir) {
-        if (!dir.exists()&& dir.mkdirs()){
-                copyFiles();
+        if (!dir.exists() && dir.mkdirs()) {
+            copyFiles();
         }
-        if(dir.exists()) {
-            String datafilepath = datapath+ "/tessdata/eng.traineddata";
+        if (dir.exists()) {
+            String datafilepath = datapath + "/tessdata/eng.traineddata";
             File datafile = new File(datafilepath);
 
             if (!datafile.exists()) {
