@@ -7,4 +7,7 @@
     <color name="image_border_end">#6698ff</color>
     <color name="image_border_center">#6698ff</color>
     <color name="image_backg">#FFFFFF</color>
+    <color name="opaque_red">#f00</color>
+    <color name="translucent_red">#80ff0000</color>
+    <color name="white">#ffffff</color>
 </resources>
