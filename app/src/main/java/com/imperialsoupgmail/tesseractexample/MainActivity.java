@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     ImageButton goButton;
 
+    final int PIC_CROP = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView)this.findViewById(R.id.imageView);
         goButton=(ImageButton) findViewById(R.id.goButton) ;
         logoButton = (ImageButton) findViewById(R.id.logoButton);
+
         imageView .setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.INVISIBLE);
 
@@ -104,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
         mTess = new TessBaseAPI();
         checkFile(new File(datapath + "tessdata/"));
         mTess.init(datapath, language);
+
+         result = null;
+        BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+        image = drawable.getBitmap();
         String result = null;
         mTess.setImage(image);
         result = mTess.getUTF8Text();
@@ -130,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             // indicate output X and Y
             cropIntent.putExtra("outputX", 256);
             cropIntent.putExtra("outputY", 256);
-            cropIntent.putExtra("raw-en-rGB",true);
             // retrieve data on return
             cropIntent.putExtra("return-data", true);
             // start the activity - we handle returning in onActivityResult
@@ -228,4 +233,19 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap ARGBBitmap(Bitmap img) {
         return img.copy(Bitmap.Config.ARGB_8888,true);
     }
+
+   public void DispatcherFunction(String word){
+       word=word.toUpperCase();
+        int intIndex = word.indexOf("SCOOBY");
+        if(intIndex == - 1){
+            Intent intent = new Intent(this, NotFoundActivity.class);
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(this, InfoActivity.class);
+            intent.putExtra("nameOfLiquid","Scooby Snack");
+            startActivity(intent);
+        }
+    }
+
+
 }

@@ -26,11 +26,12 @@
         <ImageButton
             android:layout_width="300dp"
             android:layout_height="300dp"
-            app:srcCompat="@drawable/logo"
+            app:srcCompat="@drawable/camera"
             android:background="@null"
             android:id="@+id/logoButton"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:elevation="0dp" />
 
         <ImageButton
             android:layout_width="wrap_content"

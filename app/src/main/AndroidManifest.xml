@@ -17,6 +17,7 @@
         <activity android:name=".InfoActivity">
 
         </activity>
+        <activity android:name=".NotFoundActivity"></activity>
     </application>
 
 </manifest>
