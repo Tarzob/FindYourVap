@@ -42,18 +42,16 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     ImageButton goButton;
 
-    final int PIC_CROP = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        imageView = (ImageView)this.findViewById(R.id.imageView);
-        goButton=(ImageButton) findViewById(R.id.goButton) ;
+        imageView = (ImageView) this.findViewById(R.id.imageView);
+        goButton = (ImageButton) findViewById(R.id.goButton);
         logoButton = (ImageButton) findViewById(R.id.logoButton);
 
-        imageView .setVisibility(View.INVISIBLE);
+        imageView.setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.INVISIBLE);
 
 
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                processImage(image);
+                processImage(ARGBBitmap(image));
             }
         });
     }
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CAMERA_REQUEST) {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
-                photo=getDropShadow3(photo);
+                photo = getDropShadow3(photo);
                 image = photo;
                 imageView.setImageBitmap(photo);
                 imageView.setVisibility(View.VISIBLE);
@@ -86,9 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 logoButton.setVisibility(View.GONE);
                 picUri = data.getData();
                 performCrop();
-            }
-
-            else if (requestCode == CROP_PIC) {
+            } else if (requestCode == CROP_PIC) {
                 // get the returned data
                 Bundle extras = data.getExtras();
                 // get the cropped bitmap
@@ -98,26 +94,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void processImage(Bitmap image){
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+    }
+
+    public void processImage(Bitmap image) {
 
         //initialize Tesseract API
         String language = "eng";
-        datapath = getFilesDir()+ "/tesseract/";
+        datapath = getFilesDir() + "/tesseract/";
         mTess = new TessBaseAPI();
         checkFile(new File(datapath + "tessdata/"));
         mTess.init(datapath, language);
-
-         result = null;
-        BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
-        image = drawable.getBitmap();
         String result = null;
         mTess.setImage(image);
         result = mTess.getUTF8Text();
-        result = result.replaceAll("\\s+","");
-        Log.e("mon Résultat est :",result);
-        Intent i=new Intent(this, InfoActivity.class);
-        i.putExtra("nameOfLiquid",result);
-        startActivity(i);
+        result = result.replaceAll("\\s+", "");
+        Log.e("===>>> Résultat <<<===", result + "!!!!!!!!!!!!!!!!!!!!");
+        dispatcherFunction(result);
     }
 
     private void performCrop() {
@@ -134,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
             cropIntent.putExtra("aspectX", 1);
             cropIntent.putExtra("aspectY", 1);
             // indicate output X and Y
-            cropIntent.putExtra("outputX", 256);
-            cropIntent.putExtra("outputY", 256);
+            cropIntent.putExtra("outputX", 1024);
+            cropIntent.putExtra("outputY", 1024);
             // retrieve data on return
             cropIntent.putExtra("return-data", true);
             // start the activity - we handle returning in onActivityResult
@@ -151,11 +147,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void checkFile(File dir) {
-        if (!dir.exists()&& dir.mkdirs()){
+        if (!dir.exists() && dir.mkdirs()) {
             copyFiles();
         }
-        if(dir.exists()) {
-            String datafilepath = datapath+ "/tessdata/eng.traineddata";
+        if (dir.exists()) {
+            String datafilepath = datapath + "/tessdata/eng.traineddata";
             File datafile = new File(datafilepath);
 
             if (!datafile.exists()) {
@@ -193,9 +189,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private static Bitmap getDropShadow3(Bitmap bitmap) {
 
-        if (bitmap==null) return null;
+        if (bitmap == null) return null;
         int think = 6;
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
@@ -218,32 +215,42 @@ public class MainActivity extends AppCompatActivity {
         // Bottom
         Shader bshader = new LinearGradient(0, newH, 0, h, Color.GRAY, Color.LTGRAY, Shader.TileMode.CLAMP);
         paint.setShader(bshader);
-        c.drawRect(think, newH, newW  , h, paint);
+        c.drawRect(think, newH, newW, h, paint);
 
         //Corner
         Shader cchader = new LinearGradient(0, newH, 0, h, Color.LTGRAY, Color.LTGRAY, Shader.TileMode.CLAMP);
         paint.setShader(cchader);
-        c.drawRect(newW, newH, w  , h, paint);
+        c.drawRect(newW, newH, w, h, paint);
 
 
         c.drawBitmap(sbmp, 0, 0, null);
 
         return bmp;
     }
+
     private Bitmap ARGBBitmap(Bitmap img) {
-        return img.copy(Bitmap.Config.ARGB_8888,true);
+        return img.copy(Bitmap.Config.ARGB_8888, true);
     }
 
-   public void DispatcherFunction(String word){
-       word=word.toUpperCase();
-        int intIndex = word.indexOf("SCOOBY");
-        if(intIndex == - 1){
-            Intent intent = new Intent(this, NotFoundActivity.class);
-            startActivity(intent);
-        }else{
-            Intent intent = new Intent(this, InfoActivity.class);
-            intent.putExtra("nameOfLiquid","Scooby Snack");
-            startActivity(intent);
+    public void dispatcherFunction(String word) {
+        word = word.toUpperCase();
+        String[] matches = new String[]{"SCOOBY","SNACK", "CARAM","ROYKI"};
+        for (String match : matches) {
+            if (word.contains(match)) {
+                Intent intent = new Intent(this, InfoActivity.class);
+                if(match.equalsIgnoreCase("SCOOBY") ||match.equalsIgnoreCase("SNACK")){
+                    intent.putExtra("nameOfLiquid", "Scooby Snack");
+                }
+                else {
+                    intent.putExtra("nameOfLiquid", "Roykin Caramel");
+                }
+                startActivity(intent);
+                break;
+            } else {
+                Intent intent = new Intent(this, NotFoundActivity.class);
+                startActivity(intent);
+                break;
+            }
         }
     }
 
