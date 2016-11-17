@@ -27,7 +27,7 @@
             android:layout_width="300dp"
             android:layout_height="300dp"
             app:srcCompat="@drawable/logo"
-
+            android:background="@null"
             android:id="@+id/logoButton"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
@@ -37,8 +37,8 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/next"
             android:id="@+id/goButton"
+            android:background="@android:color/transparent"
             android:onClick="processImage"
-            android:background="@null"
             android:layout_marginBottom="46dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
