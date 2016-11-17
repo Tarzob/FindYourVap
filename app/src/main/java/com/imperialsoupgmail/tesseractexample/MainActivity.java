@@ -32,11 +32,12 @@ public class MainActivity extends AppCompatActivity {
     String datapath = "";
     private TessBaseAPI mTess;
     Bitmap image;
-
+    public String result;
     ImageButton logoButton;
     ImageView imageView;
     ImageButton goButton;
 
+    final int PIC_CROP = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             photo=getDropShadow3(photo);
             imageView.setImageBitmap(photo);
+
             imageView.setVisibility(View.VISIBLE);
             goButton.setVisibility(View.VISIBLE);
             logoButton.setVisibility(View.GONE);
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         checkFile(new File(datapath + "tessdata/"));
         mTess.init(datapath, language);
 
-        String result = null;
+         result = null;
         BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
         image = drawable.getBitmap();
         mTess.setImage(image);
@@ -172,4 +174,19 @@ public class MainActivity extends AppCompatActivity {
 
         return bmp;
     }
+
+   public void DispatcherFunction(String word){
+       word=word.toUpperCase();
+        int intIndex = word.indexOf("SCOOBY");
+        if(intIndex == - 1){
+            Intent intent = new Intent(this, NotFoundActivity.class);
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(this, InfoActivity.class);
+            intent.putExtra("nameOfLiquid","Scooby Snack");
+            startActivity(intent);
+        }
+    }
+
+
 }
