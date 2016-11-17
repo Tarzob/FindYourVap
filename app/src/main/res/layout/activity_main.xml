@@ -38,7 +38,6 @@
             app:srcCompat="@drawable/next"
             android:id="@+id/goButton"
             android:background="@android:color/transparent"
-            android:onClick="processImage"
             android:layout_marginBottom="46dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />

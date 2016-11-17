@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     String datapath = "";
     private TessBaseAPI mTess;
-    Bitmap image;
+    public Bitmap image;
     final int CAMERA_CAPTURE = 1;
     final int CROP_PIC = 2;
     private Uri picUri;
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView)this.findViewById(R.id.imageView);
         goButton=(ImageButton) findViewById(R.id.goButton) ;
         logoButton = (ImageButton) findViewById(R.id.logoButton);
-
         imageView .setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.INVISIBLE);
 
@@ -61,7 +60,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            }
+        });
 
+        goButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                processImage(image);
             }
         });
     }
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == CAMERA_REQUEST) {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 photo=getDropShadow3(photo);
+                image = photo;
                 imageView.setImageBitmap(photo);
                 imageView.setVisibility(View.VISIBLE);
                 goButton.setVisibility(View.VISIBLE);
@@ -84,12 +90,13 @@ public class MainActivity extends AppCompatActivity {
                 // get the returned data
                 Bundle extras = data.getExtras();
                 // get the cropped bitmap
-                Bitmap thePic = extras.getParcelable("data");
-                imageView.setImageBitmap(thePic);
+                image = extras.getParcelable("data");
+                imageView.setImageBitmap(image);
+                processImage(ARGBBitmap(image));
             }
         }
     }
-    public void processImage(View view){
+    public void processImage(Bitmap image){
 
         //initialize Tesseract API
         String language = "eng";
@@ -97,10 +104,7 @@ public class MainActivity extends AppCompatActivity {
         mTess = new TessBaseAPI();
         checkFile(new File(datapath + "tessdata/"));
         mTess.init(datapath, language);
-
         String result = null;
-        BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
-        image = drawable.getBitmap();
         mTess.setImage(image);
         result = mTess.getUTF8Text();
         result = result.replaceAll("\\s+","");
@@ -121,11 +125,12 @@ public class MainActivity extends AppCompatActivity {
             // set crop properties
             cropIntent.putExtra("crop", "true");
             // indicate aspect of desired crop
-            cropIntent.putExtra("aspectX", 2);
+            cropIntent.putExtra("aspectX", 1);
             cropIntent.putExtra("aspectY", 1);
             // indicate output X and Y
             cropIntent.putExtra("outputX", 256);
             cropIntent.putExtra("outputY", 256);
+            cropIntent.putExtra("raw-en-rGB",true);
             // retrieve data on return
             cropIntent.putExtra("return-data", true);
             // start the activity - we handle returning in onActivityResult
@@ -219,5 +224,8 @@ public class MainActivity extends AppCompatActivity {
         c.drawBitmap(sbmp, 0, 0, null);
 
         return bmp;
+    }
+    private Bitmap ARGBBitmap(Bitmap img) {
+        return img.copy(Bitmap.Config.ARGB_8888,true);
     }
 }
