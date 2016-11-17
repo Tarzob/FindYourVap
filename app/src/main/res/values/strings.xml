@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">FindYoutVap</string>
     <string name="base_rating">/5</string>
-    <string name="app_name">Find Your Vape</string>
     <string-array name="photo_dialog_options">
         <item>Pick a Photo</item>
         <item>Take a Photo</item>
